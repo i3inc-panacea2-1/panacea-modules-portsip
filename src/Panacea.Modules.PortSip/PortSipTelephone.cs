@@ -582,10 +582,11 @@ namespace Panacea.Modules.PortSip
         }
         public override async Task Register()
         {
-            var source = new CancellationTokenSource(10000);
-            Init();
+            var source = new CancellationTokenSource(15000);
+            
             await Task.Run(() =>
             {
+                Init();
                 var rt = _sdkLib.registerServer(120, 0);
             }, source.Token);
             source.Dispose();
