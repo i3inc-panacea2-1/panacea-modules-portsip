@@ -64,9 +64,10 @@ namespace Panacea.Modules.PortSip
 
 
             int speakers = -1, microphone = -1;
-
+            
             if (_speakers != null)
             {
+                _logger.Info(this, "Settings speakers to: '" + _speakers + "'");
                 var split = _speakers.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
                 var outDevices = _sdkLib.getNumOfPlayoutDevices();
                 for (var i = 0; i < outDevices; i++)
@@ -74,7 +75,7 @@ namespace Panacea.Modules.PortSip
                     var sb = new StringBuilder();
                     sb.Length = 256;
                     _sdkLib.getPlayoutDeviceName(i, sb, 256);
-
+                    _logger.Info(this, sb.ToString());
                     if (!split.Any(spl => sb.ToString().Contains(spl) || spl.Contains(sb.ToString()))) continue;
 
                     speakers = i;
@@ -83,7 +84,7 @@ namespace Panacea.Modules.PortSip
             }
             if (_microphone != null)
             {
-
+                _logger.Info(this, "Settings microphone to: '" + _microphone + "'");
                 var split = _microphone.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
                 var inDevices = _sdkLib.getNumOfRecordingDevices();
 
@@ -92,12 +93,13 @@ namespace Panacea.Modules.PortSip
                     var sb = new StringBuilder();
                     sb.Length = 256;
                     _sdkLib.getRecordingDeviceName(i, sb, 256);
+                    _logger.Info(this, sb.ToString());
                     if (!split.Any(spl => sb.ToString().Contains(spl) || spl.Contains(sb.ToString()))) continue;
                     microphone = i;
                     break;
                 }
             }
-
+            _logger.Info(this, "Devices indices: " + speakers + " " + microphone);
             _sdkLib.setAudioDeviceId(microphone, speakers);
 
             // Dear friend, do not remove these lines. There is a Remedi issue where speakerphone is not 100% unless you pick up the handset and place it back.
